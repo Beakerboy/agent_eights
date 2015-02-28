@@ -31,15 +31,15 @@ plugin_info.pluginId = 'portals-list';
 // PLUGIN START ////////////////////////////////////////////////////////
 
 // use own namespace for plugin
-window.plugin.portalslist = function() {};
+window.plugin.agenteights = function() {};
 
-window.plugin.portalslist.listPortals = [];
-window.plugin.portalslist.sortBy = 1; // second column: level
-window.plugin.portalslist.sortOrder = -1;
-window.plugin.portalslist.enlP = 0;
-window.plugin.portalslist.resP = 0;
-window.plugin.portalslist.neuP = 0;
-window.plugin.portalslist.filter = 0;
+window.plugin.agenteights.listPortals = [];
+window.plugin.agenteights.sortBy = 1; // second column: level
+window.plugin.agenteights.sortOrder = -1;
+window.plugin.agenteights.enlP = 0;
+window.plugin.agenteights.resP = 0;
+window.plugin.agenteights.neuP = 0;
+window.plugin.agenteights.filter = 0;
 
 /*
  * plugins may add fields by appending their specifiation to the following list. The following members are supported:
@@ -60,14 +60,14 @@ window.plugin.portalslist.filter = 0;
  */
 
 
-window.plugin.portalslist.fields = [
+window.plugin.agenteights.fields = [
   {
     title: "Portal Name",
     value: function(portal) { return portal.options.data.title; },
     sortValue: function(value, portal) { return value.toLowerCase(); },
     format: function(cell, portal, value) {
       $(cell)
-        .append(plugin.portalslist.getPortalLink(portal))
+        .append(plugin.agenteights.getPortalLink(portal))
         .addClass("portalTitle");
     }
   },
@@ -162,13 +162,13 @@ window.plugin.portalslist.fields = [
 ];
 
 //fill the listPortals array with portals avaliable on the map (level filtered portals will not appear in the table)
-window.plugin.portalslist.getPortals = function() {
+window.plugin.agenteights.getPortals = function() {
   //filter : 0 = All, 1 = Neutral, 2 = Res, 3 = Enl, -x = all but x
   var retval=false;
 
   var displayBounds = map.getBounds();
 
-  window.plugin.portalslist.listPortals = [];
+  window.plugin.agenteights.listPortals = [];
   $.each(window.portals, function(i, portal) {
     // eliminate offscreen portals (selected, and in padding)
     if(!displayBounds.contains(portal.getLatLng())) return true;
@@ -177,13 +177,13 @@ window.plugin.portalslist.getPortals = function() {
 
     switch (portal.options.team) {
       case TEAM_RES:
-        window.plugin.portalslist.resP++;
+        window.plugin.agenteights.resP++;
         break;
       case TEAM_ENL:
-        window.plugin.portalslist.enlP++;
+        window.plugin.agenteights.enlP++;
         break;
       default:
-        window.plugin.portalslist.neuP++;
+        window.plugin.agenteights.neuP++;
     }
 
     // cache values and DOM nodes
@@ -196,7 +196,7 @@ window.plugin.portalslist.getPortals = function() {
     var cell = row.insertCell(-1);
     cell.className = 'alignR';
 
-    window.plugin.portalslist.fields.forEach(function(field, i) {
+    window.plugin.agenteights.fields.forEach(function(field, i) {
       cell = row.insertCell(-1);
 
       var value = field.value(portal);
@@ -211,49 +211,49 @@ window.plugin.portalslist.getPortals = function() {
       }
     });
 
-    window.plugin.portalslist.listPortals.push(obj);
+    window.plugin.agenteights.listPortals.push(obj);
   });
 
   return retval;
 }
 
-window.plugin.portalslist.displayPL = function() {
+window.plugin.agenteights.displayPL = function() {
   var list;
   // plugins (e.g. bookmarks) can insert fields before the standard ones - so we need to search for the 'level' column
-  window.plugin.portalslist.sortBy = window.plugin.portalslist.fields.map(function(f){return f.title;}).indexOf('Level');
-  window.plugin.portalslist.sortOrder = -1;
-  window.plugin.portalslist.enlP = 0;
-  window.plugin.portalslist.resP = 0;
-  window.plugin.portalslist.neuP = 0;
-  window.plugin.portalslist.filter = 0;
+  window.plugin.agenteights.sortBy = window.plugin.agenteights.fields.map(function(f){return f.title;}).indexOf('Level');
+  window.plugin.agenteights.sortOrder = -1;
+  window.plugin.agenteights.enlP = 0;
+  window.plugin.agenteights.resP = 0;
+  window.plugin.agenteights.neuP = 0;
+  window.plugin.agenteights.filter = 0;
 
-  if (window.plugin.portalslist.getPortals()) {
-    list = window.plugin.portalslist.portalTable(window.plugin.portalslist.sortBy, window.plugin.portalslist.sortOrder,window.plugin.portalslist.filter);
+  if (window.plugin.agenteights.getPortals()) {
+    list = window.plugin.agenteights.portalTable(window.plugin.agenteights.sortBy, window.plugin.agenteights.sortOrder,window.plugin.agenteights.filter);
   } else {
     list = $('<table class="noPortals"><tr><td>Nothing to show!</td></tr></table>');
   };
 
   if(window.useAndroidPanes()) {
-    $('<div id="portalslist" class="mobile">').append(list).appendTo(document.body);
+    $('<div id="agenteights" class="mobile">').append(list).appendTo(document.body);
   } else {
     dialog({
-      html: $('<div id="portalslist">').append(list),
-      dialogClass: 'ui-dialog-portalslist',
-      title: 'Portal list: ' + window.plugin.portalslist.listPortals.length + ' ' + (window.plugin.portalslist.listPortals.length == 1 ? 'portal' : 'portals'),
+      html: $('<div id="agenteights">').append(list),
+      dialogClass: 'ui-dialog-agenteights',
+      title: 'Portal list: ' + window.plugin.agenteights.listPortals.length + ' ' + (window.plugin.agenteights.listPortals.length == 1 ? 'portal' : 'portals'),
       id: 'portal-list',
       width: 700
     });
   }
 }
 
-window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
+window.plugin.agenteights.portalTable = function(sortBy, sortOrder, filter) {
   // save the sortBy/sortOrder/filter
-  window.plugin.portalslist.sortBy = sortBy;
-  window.plugin.portalslist.sortOrder = sortOrder;
-  window.plugin.portalslist.filter = filter;
+  window.plugin.agenteights.sortBy = sortBy;
+  window.plugin.agenteights.sortOrder = sortOrder;
+  window.plugin.agenteights.filter = filter;
 
-  var portals = window.plugin.portalslist.listPortals;
-  var sortField = window.plugin.portalslist.fields[sortBy];
+  var portals = window.plugin.agenteights.listPortals;
+  var sortField = window.plugin.agenteights.fields[sortBy];
 
   portals.sort(function(a, b) {
     var valueA = a.sortValues[sortBy];
@@ -289,7 +289,7 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
 
   row = table.insertRow(-1);
 
-  var length = window.plugin.portalslist.listPortals.length;
+  var length = window.plugin.agenteights.listPortals.length;
 
   ["All", "Neutral", "Resistance", "Enlightened"].forEach(function(label, i) {
     cell = row.appendChild(document.createElement('th'));
@@ -297,7 +297,7 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
     cell.textContent = label+':';
     cell.title = 'Show only portals of this color';
     $(cell).click(function() {
-      $('#portalslist').empty().append(window.plugin.portalslist.portalTable(sortBy, sortOrder, i));
+      $('#agenteights').empty().append(window.plugin.agenteights.portalTable(sortBy, sortOrder, i));
     });
 
 
@@ -305,7 +305,7 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
     cell.className = 'filter' + label.substr(0, 3);
     if(i != 0) cell.title = 'Hide portals of this color';
     $(cell).click(function() {
-      $('#portalslist').empty().append(window.plugin.portalslist.portalTable(sortBy, sortOrder, -i));
+      $('#agenteights').empty().append(window.plugin.agenteights.portalTable(sortBy, sortOrder, -i));
     });
 
     switch(i-1) {
@@ -313,13 +313,13 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
         cell.textContent = length;
         break;
       case 0:
-        cell.textContent = window.plugin.portalslist.neuP + ' (' + Math.round(window.plugin.portalslist.neuP/length*100) + '%)';
+        cell.textContent = window.plugin.agenteights.neuP + ' (' + Math.round(window.plugin.agenteights.neuP/length*100) + '%)';
         break;
       case 1:
-        cell.textContent = window.plugin.portalslist.resP + ' (' + Math.round(window.plugin.portalslist.resP/length*100) + '%)';
+        cell.textContent = window.plugin.agenteights.resP + ' (' + Math.round(window.plugin.agenteights.resP/length*100) + '%)';
         break;
       case 2:
-        cell.textContent = window.plugin.portalslist.enlP + ' (' + Math.round(window.plugin.portalslist.enlP/length*100) + '%)';
+        cell.textContent = window.plugin.agenteights.enlP + ' (' + Math.round(window.plugin.agenteights.enlP/length*100) + '%)';
     }
   });
 
@@ -333,12 +333,12 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
   cell = row.appendChild(document.createElement('th'));
   cell.textContent = '#';
 
-  window.plugin.portalslist.fields.forEach(function(field, i) {
+  window.plugin.agenteights.fields.forEach(function(field, i) {
     cell = row.appendChild(document.createElement('th'));
     cell.textContent = field.title;
     if(field.sort !== null) {
       cell.classList.add("sortable");
-      if(i == window.plugin.portalslist.sortBy) {
+      if(i == window.plugin.agenteights.sortBy) {
         cell.classList.add("sorted");
       }
 
@@ -350,7 +350,7 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
           order = field.defaultOrder < 0 ? -1 : 1;
         }
 
-        $('#portalslist').empty().append(window.plugin.portalslist.portalTable(i, order, filter));
+        $('#agenteights').empty().append(window.plugin.agenteights.portalTable(i, order, filter));
       });
     }
   });
@@ -373,7 +373,7 @@ window.plugin.portalslist.portalTable = function(sortBy, sortOrder, filter) {
 // portal link - single click: select portal
 //               double click: zoom to and select portal
 // code from getPortalLink function by xelio from iitc: AP List - https://raw.github.com/breunigs/ingress-intel-total-conversion/gh-pages/plugins/ap-list.user.js
-window.plugin.portalslist.getPortalLink = function(portal) {
+window.plugin.agenteights.getPortalLink = function(portal) {
   var coord = portal.getLatLng();
   var perma = '/intel?ll='+coord.lat+','+coord.lng+'&z=17&pll='+coord.lat+','+coord.lng;
 
@@ -394,24 +394,24 @@ window.plugin.portalslist.getPortalLink = function(portal) {
   return link;
 }
 
-window.plugin.portalslist.onPaneChanged = function(pane) {
-  if(pane == "plugin-portalslist")
-    window.plugin.portalslist.displayPL();
+window.plugin.agenteights.onPaneChanged = function(pane) {
+  if(pane == "plugin-agenteights")
+    window.plugin.agenteights.displayPL();
   else
-    $("#portalslist").remove()
+    $("#agenteights").remove()
 };
 
 var setup =  function() {
   if(window.useAndroidPanes()) {
-    android.addPane("plugin-portalslist", "Portals list", "ic_action_paste");
-    addHook("paneChanged", window.plugin.portalslist.onPaneChanged);
+    android.addPane("plugin-agenteights", "Portals list", "ic_action_paste");
+    addHook("paneChanged", window.plugin.agenteights.onPaneChanged);
   } else {
-    $('#toolbox').append('<a onclick="window.plugin.portalslist.displayPL()" title="Display a list of portals in the current view [t]" accesskey="t">Portals list</a>');
+    $('#toolbox').append('<a onclick="window.plugin.agenteights.displayPL()" title="Display a list of portals in the current view [t]" accesskey="t">Portals list</a>');
   }
 
   $("<style>")
     .prop("type", "text/css")
-    .html("#portalslist.mobile {\n  background: transparent;\n  border: 0 none !important;\n  height: 100% !important;\n  width: 100% !important;\n  left: 0 !important;\n  top: 0 !important;\n  position: absolute;\n  overflow: auto;\n}\n\n#portalslist table {\n  margin-top: 5px;\n  border-collapse: collapse;\n  empty-cells: show;\n  width: 100%;\n  clear: both;\n}\n\n#portalslist table td, #portalslist table th {\n  background-color: #1b415e;\n  border-bottom: 1px solid #0b314e;\n  color: white;\n  padding: 3px;\n}\n\n#portalslist table th {\n  text-align: center;\n}\n\n#portalslist table .alignR {\n  text-align: right;\n}\n\n#portalslist table.portals td {\n  white-space: nowrap;\n}\n\n#portalslist table th.sortable {\n  cursor: pointer;\n}\n\n#portalslist table .portalTitle {\n  min-width: 120px !important;\n  max-width: 240px !important;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n#portalslist .sorted {\n  color: #FFCE00;\n}\n\n#portalslist table.filter {\n  table-layout: fixed;\n  cursor: pointer;\n  border-collapse: separate;\n  border-spacing: 1px;\n}\n\n#portalslist table.filter th {\n  text-align: left;\n  padding-left: 0.3em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n#portalslist table.filter td {\n  text-align: right;\n  padding-right: 0.3em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n#portalslist .filterNeu {\n  background-color: #666;\n}\n\n#portalslist table tr.res td, #portalslist .filterRes {\n  background-color: #005684;\n}\n\n#portalslist table tr.enl td, #portalslist .filterEnl {\n  background-color: #017f01;\n}\n\n#portalslist table tr.none td {\n  background-color: #000;\n}\n\n#portalslist .disclaimer {\n  margin-top: 10px;\n  font-size: 10px;\n}\n\n#portalslist.mobile table.filter tr {\n  display: block;\n  text-align: center;\n}\n#portalslist.mobile table.filter th, #portalslist.mobile table.filter td {\n  display: inline-block;\n  width: 22%;\n}\n\n")
+    .html("#agenteights.mobile {\n  background: transparent;\n  border: 0 none !important;\n  height: 100% !important;\n  width: 100% !important;\n  left: 0 !important;\n  top: 0 !important;\n  position: absolute;\n  overflow: auto;\n}\n\n#agenteights table {\n  margin-top: 5px;\n  border-collapse: collapse;\n  empty-cells: show;\n  width: 100%;\n  clear: both;\n}\n\n#agenteights table td, #agenteights table th {\n  background-color: #1b415e;\n  border-bottom: 1px solid #0b314e;\n  color: white;\n  padding: 3px;\n}\n\n#agenteights table th {\n  text-align: center;\n}\n\n#agenteights table .alignR {\n  text-align: right;\n}\n\n#agenteights table.portals td {\n  white-space: nowrap;\n}\n\n#agenteights table th.sortable {\n  cursor: pointer;\n}\n\n#agenteights table .portalTitle {\n  min-width: 120px !important;\n  max-width: 240px !important;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n#agenteights .sorted {\n  color: #FFCE00;\n}\n\n#agenteights table.filter {\n  table-layout: fixed;\n  cursor: pointer;\n  border-collapse: separate;\n  border-spacing: 1px;\n}\n\n#agenteights table.filter th {\n  text-align: left;\n  padding-left: 0.3em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n#agenteights table.filter td {\n  text-align: right;\n  padding-right: 0.3em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n#agenteights .filterNeu {\n  background-color: #666;\n}\n\n#agenteights table tr.res td, #agenteights .filterRes {\n  background-color: #005684;\n}\n\n#agenteights table tr.enl td, #agenteights .filterEnl {\n  background-color: #017f01;\n}\n\n#agenteights table tr.none td {\n  background-color: #000;\n}\n\n#agenteights .disclaimer {\n  margin-top: 10px;\n  font-size: 10px;\n}\n\n#agenteights.mobile table.filter tr {\n  display: block;\n  text-align: center;\n}\n#agenteights.mobile table.filter th, #agenteights.mobile table.filter td {\n  display: inline-block;\n  width: 22%;\n}\n\n")
     .appendTo("head");
 
 }
